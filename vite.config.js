@@ -15,5 +15,8 @@ export default defineConfig({
     proxy: {
       '/schemas': 'http://localhost:8001',
     }
+  },
+  test: {
+    environment: "happy-dom",
   }
 })
