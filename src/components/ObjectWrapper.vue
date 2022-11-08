@@ -1,19 +1,26 @@
 <template>
-  <FormItem
-    v-for="item in schema.order"
-    :key="item"
-    v-bind="schema.properties[item]"
-    v-model="model"
-  ></FormItem>
+  <template v-for="item in schema.order" :key="item">
+    <ObjectWrapper v-if="schema.properties[item].type === 'object'" :schema="schema.properties[item]" v-model="model[item]"></ObjectWrapper>
+    <ArrayWrapper v-else-if="schema.properties[item].type === 'array'" :schema="schema.properties[item]" v-model="model[item]"></ArrayWrapper>
+    <FormItem
+      v-else
+      :name="item"
+      v-bind="schema.properties[item]"
+      :model-value="model[item]"
+      @update:modelValue="(val) => onChange(val, item)"
+    ></FormItem>
+  </template>
 </template>
 
 <script setup>
-import { reactive, ref } from "vue";
+import { computed } from "vue";
 
 const props = defineProps({
   modelValue: Object,
   schema: Object,
 });
+
+const emit = defineEmits(['update:modelValue'])
 
 const model = computed({
   get() {
@@ -23,6 +30,10 @@ const model = computed({
     emit('update:modelValue', v)
   }
 })
+
+const onChange = (val, name) => {
+  model.value = { ...model.value, [name]: val}
+}
 
 </script>
 

@@ -1,7 +1,10 @@
 <template>
   <label :for="id" class="checkbox-label">
     <input :id="id" type="checkbox" :name="props.name" v-model="inputModel" class="checkbox">
-    {{config.label}}
+    <div :class="{'switch-wrap': true, 'checked': inputModel}">
+      <div class="switch"></div>
+    </div>
+    {{inputModel ? config.onLabel : config.offLabel}}
   </label>
 </template>
 
@@ -39,9 +42,34 @@ const id = nanoid()
   font-weight: 500;
   color: #262626;
   .checkbox {
+    display: none;
     width: 18px;
     height: 18px;
     margin-right: 5px;
+  }
+}
+.switch-wrap {
+  width: 44px;
+  height: 24px;
+  border-radius: 15px;
+  background: #efeff3;
+  position: relative;
+  margin-right: 10px;
+  &.checked {
+    background: #1155cb;
+    .switch {
+      left: calc(100% - 22px)
+    }
+  }
+  .switch {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    background: #fff;
+    left: 2px;
+    top: 2px;
+    border-radius: 100%;
+    transition: .2s;
   }
 }
 </style>

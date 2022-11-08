@@ -1,11 +1,7 @@
 <template>
   <form class="form" onsubmit="return false">
-    <FormItem
-      v-for="item in props.schema"
-      :key="item.name"
-      v-bind="item"
-      v-model="props.modelValue"
-    ></FormItem>
+    <ObjectWrapper v-if="schema.type === 'object'" :schema="schema" v-model="model"></ObjectWrapper>
+    <ArrayWrapper v-else-if="schema.type === 'array'" :schema="schema" v-model="model"></ArrayWrapper>
     <div class="alert-wrap" v-show="hasSubmited">
       <div class="alert" v-if="!valid">schema violation</div>
       <div class="alert success" v-else>schema validation successful</div>
@@ -15,7 +11,7 @@
 </template>
 
 <script setup>
-import { reactive, ref, provide, getCurrentInstance } from "vue";
+import { reactive, ref, provide, getCurrentInstance, computed } from "vue";
 import { FORMKEY } from '../constant'
 
 const parent = getCurrentInstance()
@@ -28,8 +24,19 @@ provide(FORMKEY, {
 
 const props = defineProps({
   modelValue: Object,
-  schema: Array,
+  schema: Object,
 });
+
+const emit = defineEmits(['update:modelValue'])
+
+const model = computed({
+  get() {
+    return props.modelValue
+  },
+  set(v) {
+    emit('update:modelValue', v)
+  }
+})
 
 const hasSubmited = ref(false)
 const valid = ref(true)

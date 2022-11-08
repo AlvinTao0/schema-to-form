@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from "vue-router";
 import Service from './pages/Service.vue'
 import Route from './pages/Route.vue'
+import Plugin from './pages/Plugin.vue'
 
 const routes = [
   {
@@ -10,6 +11,10 @@ const routes = [
   {
     path: "/service",
     component: Service,
+  },
+  {
+    path: "/plugin",
+    component: Plugin,
   },
   {
     path: "/",
