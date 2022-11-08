@@ -20,9 +20,19 @@ const schema = {
       label: "Name",
       type: "string",
       validator: {
-        pattern: "^test$",
-        one_of: ["test", "test2", "test3"],
-        match_none: ["test4", "test5"],
+        pattern: "^test",
+        minLength: 2,
+        maxLength: 10,
+        one_of: {
+          pattern: "^test",
+          minLength: 3,
+          maxLength: 9,
+        },
+        match_none: {
+          pattern: "^t",
+          minLength: 8,
+          maxLength: 0,
+        }
       },
     },
     protocol: {

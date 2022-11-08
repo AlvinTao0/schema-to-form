@@ -14,6 +14,7 @@
 import { ref, watch, inject, getCurrentInstance, computed } from "vue";
 import { FORMKEY } from '../constant'
 import { TypeToName } from "../components";
+import { runAllValidator, runValidator, getAllValidatorResult } from '../utils/util'
 
 const { link } = inject(FORMKEY, null)
 const currentInstance = getCurrentInstance()
@@ -55,7 +56,9 @@ watch(
 function validate() {
   return new Promise(resolve => {
     const value = model.value
-    runAllValidator(value).then(res => {
+    const { validator: validatorObject } = props
+
+    runAllValidator(validatorObject, value, props.name).then(res => {
       if (res && res.length > 0) {
         valid.value = false
         error.value = res
@@ -68,69 +71,6 @@ function validate() {
   })
 }
 
-function runAllValidator(value) {
-  return new Promise(resolve => {
-    const { validator } = props
-    if (validator) {
-      const res = Object.entries(validator).reduce((pre, item) => {
-        const result = runValidator(item, value)
-        if (result) {
-          pre.push(result)
-        }
-        return pre
-      }, [])
-      if (res.length > 0) {
-        resolve(res)
-      } else {
-        resolve()
-      }
-    } else {
-      resolve()
-    }
-  })
-}
-
-function runValidator(validator, value) {
-  const [type, data] = validator
-  if (type === 'pattern' && data && !new RegExp(data).test(String(value))) {
-    return {
-      name: props.name,
-      message: `validator pattern: /${data}/ does not pass`
-    }
-  }
-  if (type === 'one_of' && data && !data.includes(value)) {
-    return {
-      name: props.name,
-      message: `Please input one of these: ${data}`
-    }
-  }
-  if (type === 'match_none' && data && data.includes(value)) {
-    return {
-      name: props.name,
-      message: `Please do not input one of them:  ${data}`
-    }
-  }
-  if (type === 'maximum' && data !== undefined && data < Number(value)) {
-    return {
-      name: props.name,
-      message: `The maximum value is: ${data}`
-    }
-  }
-  if (type === 'minimum' && data !== undefined && data > Number(value)) {
-    return {
-      name: props.name,
-      message: `The minimum value is: ${data}`
-    }
-  }
-  if (type === 'integer' && data && !/^-?[1-9]\d*$/.test(value)) {
-    return {
-      name: props.name,
-      message: `expected an integer`
-    }
-  }
-
-  return false
-}
 
 defineExpose({
   validate
