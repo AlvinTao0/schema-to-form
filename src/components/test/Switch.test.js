@@ -3,7 +3,7 @@ import Switch from "../Switch.vue";
 import { describe, expect, test } from "vitest";
 import { ref } from "vue";
 
-describe("notification.vue", () => {
+describe("Switch.vue", () => {
   test("renders the correct name attribute", () => {
     const name = "username";
     const wrapper = mount(Switch, {

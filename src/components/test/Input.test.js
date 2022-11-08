@@ -3,7 +3,7 @@ import Input from "../Input.vue";
 import { describe, expect, test } from "vitest"
 import { ref } from 'vue'
 
-describe("notification.vue", () => {
+describe("Input.vue", () => {
   test("renders the correct name attribute", () => {
     const name = "username"
     const wrapper = mount(Input, {
